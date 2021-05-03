@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import uniqid from 'uniqid';
 import Info from './Utils/Info';
 import Edu from './Utils/Edu';
 import Work from './Utils/Work';
-import { FiSave, FiEdit, FiPlus } from 'react-icons/fi';
+import uniqid from 'uniqid';
+import { FiPlus } from 'react-icons/fi';
+import { NoPrint } from './Utils/sharedStyle';
 
 const FormWrapper = styled.section`
   border: 1px solid darkgrey;
@@ -16,8 +17,12 @@ const FormWrapper = styled.section`
   padding: 5px;
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
+const ContentWrapper = styled.section`
+  margin-bottom: 3rem;
+`;
+
+const SectionHeader = styled.h1`
+  margin-top: -0.1rem;
 `;
 
 const Button = styled.button`
@@ -39,98 +44,80 @@ const Button = styled.button`
   }
 `;
 
-const ContentWrapper = styled.section`
-  margin-bottom: 3rem;
-`;
-
 class Content extends React.Component {
-    constructor() {
-        super();
+  constructor() {
+    super();  
+    this.handleDelete = this.handleDelete.bind(this);
 
-        this.handleInfoChange = this.handleInfoChange.bind(this);
+    this.state = {
+      eduId: uniqid(),
+      edu: [],
+      workId: uniqid(),
+      work: [],
+    };
+  }
 
-        this.state = {
-            info: {
-              name: '',
-              phone: '',
-              email: '',
-            },
-            infoEdit: true,
-            school: {
-                school: '',
-                major: '',
-                start: '',
-                finish: '',
-                id: uniqid(),
-            },
-            education: [],
-            eduEdit: true,
-            work: {
-                company: '',
-                position: '',
-                desc: '',
-                start: '',
-                end: '',
-                id: uniqid(),
-            },
-            experience: [],
-            workEdit: true,
-        };
-    }
+  newEdu = () => {
+    this.setState({
+      edu: this.state.edu.concat(this.state.eduId),
+      eduId: uniqid(),
+    })
+  }
 
-    handleInfoChange = (e) => {
+  newWork = () => {
+    this.setState({
+      work: this.state.work.concat(this.state.workId),
+      workId: uniqid(),
+    })
+  }
+
+  handleDelete = (list, id) => {
+    if (list === 'edu') {
+      let newList = this.state.edu.filter(i => i !== id);
       this.setState({
-        infoEdit: !this.state.infoEdit,
-      });
-      console.log(this.state);
-      console.log(e);
+        edu: newList,
+      })
+    } else if (list === 'work') {
+      let newList = this.state.work.filter(i => i !== id);
+      this.setState({
+        work: newList,
+      })
     }
+  }
 
-    // handleInfoEdit = (e) => {
-    //   this.setState({
-    //     infoEdit: true,
-    //   });
-    // }
+  render() {
+    const {edu, work} = this.state;
 
-    render() {
-      const {info, infoEdit} = this.state;
-
-        return (
-            <ContentWrapper>
-                <FormWrapper>
-                    <Info info={info} edit={infoEdit} action={this.handleInfoChange}/>
-                </FormWrapper>
-                <FormWrapper>
-                    <Edu />
-                    <ButtonWrapper>
-                      <Button>
-                        <FiSave />
-                      </Button>
-                      <Button>
-                        <FiPlus />
-                      </Button>
-                      <Button>
-                        <FiEdit />
-                      </Button>
-                    </ButtonWrapper>
-                </FormWrapper>
-                <FormWrapper>
-                    <Work />
-                    <ButtonWrapper>
-                      <Button>
-                        <FiSave />
-                      </Button>
-                      <Button>
-                        <FiPlus />
-                      </Button>
-                      <Button>
-                        <FiEdit />
-                      </Button>
-                    </ButtonWrapper>
-                </FormWrapper>
-            </ContentWrapper>
-        );
-    }
+    return (
+      <ContentWrapper>
+        <FormWrapper>
+          <Info />
+        </FormWrapper>
+        <FormWrapper>
+          <SectionHeader>Education</SectionHeader>
+          {edu.map(i => {
+            return <Edu key={i} id={i} handleDelete={this.handleDelete}/>;
+          })}
+          <NoPrint>
+            <Button>
+              <FiPlus onClick={this.newEdu}/>
+            </Button>
+          </NoPrint>
+        </FormWrapper>
+        <FormWrapper>
+          <SectionHeader>Experience</SectionHeader>
+          {work.map(i => {
+            return <Work key={i} id={i} handleDelete={this.handleDelete}/>;
+          })}
+          <NoPrint>
+            <Button>
+              <FiPlus onClick={this.newWork}/>
+            </Button>
+          </NoPrint>
+        </FormWrapper>
+      </ContentWrapper>
+    )
+  }
 }
 
 export default Content;

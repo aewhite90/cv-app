@@ -1,26 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FiSave, FiEdit } from 'react-icons/fi';
+import {Button, Wrapper, FormWrapper, FormRow, NoPrint} from './sharedStyle';
 
-const Wrapper = styled.div`
+const Output = styled.div`
   width: 100%;
-  padding-bottom: 5px;
+  text-align: center;
 `;
 
 const SectionHeader = styled.h1`
   margin-top: -0.1rem;
-`;
-
-const FormWrapper = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
-
-const FormRow = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  width: 100%;
 `;
 
 const TextInput = styled.input.attrs(props => ({
@@ -50,68 +39,97 @@ const PhoneInput = styled.input.attrs(props => ({
   width: 100%;
 `;
 
-const Button = styled.button`
-  height: 30px;
-  width: 45px;
-  background-color: white;
-  cursor: pointer;
-  font-size: 1.5rem;
-  border: 1px solid black;
-  margin: 0 5px;
+class Info extends React.Component {
+  constructor() {
+    super();
 
-  &:hover {
-    background-color: black;
-    color: white;
+    this.state = {
+      name: '',
+      email: '',
+      phone: '',
+      infoEdit: true,
+    };
   }
 
-  &:active {
-    background-color: darkgrey;
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    })
   }
-`;
 
-const Info = (props) => {
-  return (
-      <Wrapper>
+  handleSave = (e) => {
+    e.preventDefault();
+    this.setState({
+      infoEdit: false,
+    })
+  }
+
+  handleEdit = (e) => {
+    this.setState({
+      infoEdit: true,
+    })
+  }
+
+  render() {
+    const {name, email, phone, infoEdit} = this.state;
+
+    if (infoEdit) {
+      return(
+        <Wrapper>
           <SectionHeader>Personal Info</SectionHeader>
-          <FormWrapper>
+          <FormWrapper onSubmit={this.handleSave}>
             <FormRow>
               <Wrapper>
                 <label>Name: </label>
                 <TextInput 
-                  placeholder='First and Last Name'
                   required
-                  value={props.name}
+                  name='name'
+                  onChange={this.handleChange}
+                  value={name}
                 />
-              <Wrapper>
               </Wrapper>
+              <Wrapper>
                 <label>Email Address: </label>
                 <EmailInput 
-                  placeholder='Email'
                   required
-                  value={props.email}
+                  name='email'
+                  onChange={this.handleChange}
+                  value={email}
                 />
               </Wrapper>
               <Wrapper>
                 <label>Phone Number: </label>
                 <PhoneInput 
-                  placeholder='1(123)123-1234'
                   required
-                  value={props.phone}
+                  name='phone'
+                  onChange={this.handleChange}
+                  value={phone}
                 />
               </Wrapper>
             </FormRow>
-            {props.edit ? (
-              <Button onClick={props.action}>
-                <FiSave />
-              </Button>
-              ) : (
-              <Button onClick={props.action}>
-                <FiEdit />
-              </Button>
-            )}
+            <Button type='submit'>
+              <FiSave />
+            </Button>
           </FormWrapper>
-      </Wrapper>
-  )
+        </Wrapper>
+      )
+    }
+
+    return(
+      <div>
+        <Output>
+          <h2>{name}</h2>
+          <p>{email}</p>
+          <p>{phone}</p>
+        </Output>
+        <NoPrint>
+          <Button onClick={this.handleEdit}>
+            <FiEdit />
+          </Button>
+        </NoPrint>
+      </div>
+    )
+  }
 }
 
 export default Info;

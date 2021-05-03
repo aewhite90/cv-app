@@ -7,8 +7,8 @@ const GlobalStyle = createGlobalStyle`
 
     body {
         font-family: 'Work Sans', sans-serif;
-        line-height: 1.25rem;
-        font-size: 1rem;
+        line-height: 1rem;
+        font-size: 0.75rem;
         background-color: darkgrey;
     }
 `;
